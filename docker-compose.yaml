@@ -1,0 +1,103 @@
+version: '3'
+
+services:
+
+  pong_database:
+    container_name: pong_database
+    build:
+      context: ./pong_database
+    restart: always
+    environment:
+      POSTGRES_USER: ${NESTJS_USER}
+      POSTGRES_PASSWORD: ${NESTJS_PASSWORD}
+      POSTGRES_DB: pong
+      NESTJS_USER: ${NESTJS_USER}
+      NESTJS_PASSWORD: ${NESTJS_PASSWORD}
+    volumes:
+      - ./pong_database/db:/var/lib/postgresql
+    networks:
+      - pong
+
+  pong_redis:
+    container_name: pong_redis
+    build:
+      context: ./pong_redis
+    restart: always
+    networks:
+      - pong
+
+  pong_nestjs:
+    container_name: pong_nestjs
+    depends_on:
+      - pong_database
+      - pong_redis
+    restart: always
+    environment:
+      - REDIS_HOST=pong_redis
+      - REDIS_PORT=6379
+      - DB_HOST=pong_database
+      - DB_PORT=5432
+      - DB_USER=${NESTJS_USER}
+      - DB_PASS=${NESTJS_PASSWORD}
+      - DB_NAME_DEVELOPMENT=pong
+      - ACCESS_SECRET=${ACCESS_SECRET}
+      - REFRESH_SECRET=${REFRESH_SECRET}
+      - SERVER_HOST=${SERVER_HOST}
+      - DB_DIALECT=postgres
+      - JWTKEY=${ACCESS_SECRET}
+      - AUTH_CLIENT_ID=${AUTH_CLIENT_ID}
+      - AUTH_CALLBACK_URL=${AUTH_CALLBACK_URL}
+      - GOOGLE_AUTH_CLIENT_ID=${GOOGLE_AUTH_CLIENT_ID}
+      - GOOGLE_ACCESS_SECRET=${GOOGLE_ACCESS_SECRET}
+      - GOOGLE_AUTH_CALLBACK_URL=${GOOGLE_AUTH_CALLBACK_URL}
+      - HOST_2FA=${HOST_2FA}
+      - USER_2FA=${USER_2FA}
+      - PASS_2FA=${PASS_2FA}
+    build:
+      context: ./pong_nestjs
+      dockerfile: Dockerfile
+    command: npm run start:dev
+    working_dir: /pong_nestjs
+    networks:
+      - pong
+    volumes:
+      - ./pong_nestjs/src:/pong_nestjs/src
+      - ./pong_nestjs/avatars:/pong_nestjs/avatars
+
+  pong_front:
+    container_name: pong_front
+    restart: always
+    environment:
+      - REACT_APP_HOST=${SERVER_HOST} # REACT_APP_이 붙어야만 인식가능
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true # App이 수정되었을 경우 Reload 가능하도록 하는 설정
+      - WDS_SOCKET_PORT=0 # 문제 해결용 WebSocket connection to 'ws://localhost:3000/ws' failed:
+    build:
+      context: ./pong_front
+      dockerfile: Dockerfile
+    working_dir: /pong_front
+    networks:
+      - pong
+    volumes:
+      - ./pong_front/src:/pong_front/src
+
+  pong_proxy:
+    container_name: pong_proxy
+    depends_on:
+      - pong_nestjs
+      - pong_front
+    environment:
+      - SERVER_HOST=${SERVER_HOST}
+    build: ./pong_proxy
+    ports:
+      - '80:80'
+    networks:
+      - pong
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./pong_proxy/templates:/templates:ro
+
+networks: # 네트워크를 사용하겠다는 선언입니다. 선언하지 않을 경우 기본 네트워크가 사용됩니다.
+  pong: # 기본 설정을 이용하여 pong이라는 네트워크를 선언합니다. pong network를 사용하는 컨테이너들은 서로 간에 서비스의 이름으로 접근할 수 있습니다.
+    name: pong_network
+    driver: bridge
