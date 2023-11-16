@@ -1,8 +1,11 @@
 all :
-	docker-compose up --build
+	docker compose up --build -d
+
+fore :
+	docker compose up --build
 
 clean :
-	docker-compose -f docker-compose.yaml down
+	docker compose -f docker-compose.yaml down
 	rm -rf ./pong_database/db
 	mv -f ./pong_nestjs/avatars/default.jpeg ./
 	rm -f ./pong_nestjs/avatars/*
