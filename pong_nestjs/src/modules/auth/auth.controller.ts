@@ -48,13 +48,11 @@ export class AuthController {
 	private responseWithJWT(req: Request, res: Response) {
 		const user = req.user as Users;
 		if (!user){
-			// return res.redirect('http://' + process.env.SERVER_HOST + '/auth/fa2');
 			return res.redirect('/auth/fa2');
 		}
 		const token = this.authService.createToken(user, false);
 		res.cookie('jwt', token, { httpOnly: true });
 		res.header('Authorization', 'JWT ' + token);
-		// res.redirect('http://' + process.env.SERVER_HOST + '/auth/fa2');
 		res.redirect('/auth/fa2');
 		return { token };
 	}

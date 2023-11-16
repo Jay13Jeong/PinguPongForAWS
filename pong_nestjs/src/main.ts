@@ -12,7 +12,6 @@ async function bootstrap() {
 		origin: [
 			"https://" + process.env.SERVER_HOST,
 			"http://" + process.env.SERVER_HOST,
-			// "http://" + process.env.SERVER_HOST + ":3000",
 		],
 		credentials: true,
 		exposedHeaders: ['randomStringLol', 'X-XSRF-TOKEN', "Authorization"], //csrf token, cors설정.
