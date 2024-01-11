@@ -90,7 +90,7 @@ services:
       - SERVER_HOST=${SERVER_HOST}
     build: ./pong_proxy
     ports:
-      - '80:80'
+      - '8888:80'
     networks:
       - pong
     volumes:

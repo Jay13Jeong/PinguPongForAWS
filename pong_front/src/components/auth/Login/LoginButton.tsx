@@ -14,13 +14,13 @@ export default function LoginButton() {
                         GOOGLE LOGIN
                     </Box>
             </S.LoginButton>
-            <S.LoginButton 
+            {/* <S.LoginButton 
                 className='loginbtn' 
                 onClick={()=>{window.location.href = "/api/auth/42/login"}}>
                     <Box sx={{minWidth: '100%', border: '1px dashed #141616'}}>
                         42 LOGIN
                     </Box>
-            </S.LoginButton>
+            </S.LoginButton> */}
         </Stack>
         </DefaultBox>
     );
