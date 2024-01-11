@@ -51,7 +51,7 @@ export class AuthController {
 			return res.redirect('/auth/fa2');
 		}
 		const token = this.authService.createToken(user, false);
-		res.cookie('jwt', token, { httpOnly: true });
+		res.cookie('p_login_jwt', token, { httpOnly: true });
 		res.header('Authorization', 'JWT ' + token);
 		res.redirect('/auth/fa2');
 		return { token };
@@ -59,7 +59,7 @@ export class AuthController {
 
 	@Get('logout')
 	logout(@Res() res) {
-		res.clearCookie('jwt');
+		res.clearCookie('p_login_jwt');
 		res.json({ msg: 'logout ok' });
 	}
 }

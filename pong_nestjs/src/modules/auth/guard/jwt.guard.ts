@@ -18,7 +18,7 @@ export class JwtAuthGuard implements CanActivate {
 		if (request.cookies == undefined) {
 			throw new UnauthorizedException('쿠키 정보 없음.');
 		}
-		const token = request.cookies.jwt;
+		const token = request.cookies.p_login_jwt;
 		if (token == undefined || token == '') {
 			throw new UnauthorizedException('토큰이 존재하지 않음.');
 		}
@@ -54,7 +54,7 @@ export class Jwt2faGuard implements CanActivate {
 		if (request.cookies == undefined) {
 			throw new UnauthorizedException('쿠키 정보 없음.');
 		}
-		const token = request.cookies.jwt;
+		const token = request.cookies.p_login_jwt;
 		if (token == undefined || token == '') {
 			throw new UnauthorizedException('토큰이 존재하지 않음.');
 		}

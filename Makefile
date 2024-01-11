@@ -7,9 +7,9 @@ fore :
 clean :
 	docker compose -f docker-compose.yaml down
 	rm -rf ./pong_database/db
-	mv -f ./pong_nestjs/avatars/default.jpeg ./
-	rm -f ./pong_nestjs/avatars/*
-	mv -f ./default.jpeg ./pong_nestjs/avatars/
+	mv -rf ./pong_nestjs/avatars/default.jpeg ./
+	rm -rf ./pong_nestjs/avatars/*
+	mv -rf ./default.jpeg ./pong_nestjs/avatars/
 
 fclean : clean
 	docker rmi -f $(shell docker images -a -q)

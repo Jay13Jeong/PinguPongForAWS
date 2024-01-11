@@ -71,9 +71,9 @@ export class SecondAuthController {
         if (!(await bcrypt.compare(fa2Code, user.twofa_secret))){
             throw new UnauthorizedException('2단계 코드 불일치.');
         }
-        res.clearCookie('jwt');
+        res.clearCookie('p_login_jwt');
         const newToken = this.jwtServices.sign({ sub: user.id, oauthID: user.oauthID, twofa_verified: true }, { secret: process.env.JWTKEY });
-        res.cookie('jwt', newToken);
+        res.cookie('p_login_jwt', newToken);
 		res.status(200).send();
     }
 }

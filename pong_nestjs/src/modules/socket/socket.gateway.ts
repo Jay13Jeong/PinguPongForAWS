@@ -102,7 +102,7 @@ import { Cache } from 'cache-manager';
   //웹소켓의 헤더에서 jwt토큰을 추출하여 해당하는 유저정보를 디비에서 반환하는 메소드.
   private async findUserBySocket (client: Socket): Promise<Users> {
 		const cookies = this.parseCookie(client.handshake.headers.cookie);
-		const payload = await this.authService.verifyJWToken(cookies['jwt'])
+		const payload = await this.authService.verifyJWToken(cookies['p_login_jwt'])
 		if (!payload)
 			return null;
 		const user = await this.userService.findUserById(payload.sub)
